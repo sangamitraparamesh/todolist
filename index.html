@@ -3,286 +3,70 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>To‑Do List — Single File</title>
-  <style>
-    :root{
-      --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#7c5cff; --success:#2dd4bf; --danger:#fb7185;
-      --glass: rgba(255,255,255,0.03);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;}
-    body{
-      margin:0; background:linear-gradient(180deg,#071025 0%, #071022 60%); color:#e6eef6; display:flex; align-items:center; justify-content:center; padding:32px;
-    }
-    .wrap{width:100%; max-width:820px}
-    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
-    header h1{margin:0;font-size:20px;letter-spacing:0.2px}
-    .card{background:var(--card); border-radius:12px; padding:18px; box-shadow: 0 6px 30px rgba(2,6,23,0.6);}
+  <title>To-Do Notes</title>
 
-    /* Input area */
-    .add-row{display:flex; gap:10px; margin-bottom:14px}
-    .add-row input[type="text"], .add-row input[type="date"]{
-      padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background:var(--glass); color:inherit; flex:1; outline:none;
-    }
-    .btn{padding:10px 14px; border-radius:10px; border:0; cursor:pointer; background:var(--accent); color:white; font-weight:600}
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04); color:var(--muted); font-weight:500}
-
-    /* List */
-    .controls{display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap}
-    .filters{display:flex; gap:6px}
-    .filters button{padding:6px 10px;border-radius:8px;border:0;background:transparent;color:var(--muted);cursor:pointer}
-    .filters button.active{color:var(--accent); font-weight:700}
-
-    .list{list-style:none;padding:0;margin:0}
-    .item{display:flex; align-items:center; gap:10px; padding:12px; border-radius:10px; margin-bottom:8px; background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);}
-    .item.dragging{opacity:0.6}
-    .item .check{width:22px;height:22px;border-radius:6px;border:1px solid rgba(255,255,255,0.06); display:flex;align-items:center;justify-content:center;cursor:pointer}
-    .item.completed .title{text-decoration:line-through; color:var(--muted)}
-    .meta{font-size:12px;color:var(--muted);margin-left:auto;display:flex;gap:8px;align-items:center}
-    .title{font-size:15px}
-    .title[contenteditable]{outline:none;border-radius:6px;padding:2px}
-
-    .small{font-size:13px;color:var(--muted)}
-    .actions{display:flex;gap:6px}
-    .icon-btn{background:transparent;border:0;color:var(--muted);cursor:pointer;padding:6px;border-radius:6px}
-
-    footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-
-    /* Responsive */
-    @media (max-width:520px){
-      .meta{display:none}
-      header h1{font-size:18px}
-    }
-  </style>
+  <!-- Link CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="wrap">
-    <header>
-      <h1>✅ Simple To‑Do List</h1>
-      <div class="small">(localStorage • drag to reorder • edit inline)</div>
-    </header>
 
-    <div class="card" role="application" aria-label="To do list">
+<body>
+
+  <!-- ✏️📚 FLOATING BACKGROUND ICONS -->
+  <div class="bg-icons">
+    <div class="icon" style="left:5%; font-size:48px;">📒</div>
+    <div class="icon" style="left:12%; font-size:40px;">✏️</div>
+    <div class="icon" style="left:20%; font-size:44px;">📘</div>
+    <div class="icon" style="left:27%; font-size:42px;">📝</div>
+    <div class="icon" style="left:34%; font-size:38px;">🖊️</div>
+    <div class="icon" style="left:41%; font-size:46px;">📚</div>
+    <div class="icon" style="left:49%; font-size:52px;">📓</div>
+    <div class="icon" style="left:57%; font-size:44px;">🖍️</div>
+    <div class="icon" style="left:64%; font-size:48px;">📎</div>
+    <div class="icon" style="left:72%; font-size:42px;">📒</div>
+    <div class="icon" style="left:80%; font-size:46px;">✏️</div>
+    <div class="icon" style="left:88%; font-size:40px;">💡</div>
+    <div class="icon" style="left:15%; font-size:37px;">📘</div>
+    <div class="icon" style="left:37%; font-size:39px;">📚</div>
+    <div class="icon" style="left:59%; font-size:51px;">📝</div>
+    <div class="icon" style="left:77%; font-size:43px;">📐</div>
+    <div class="icon" style="left:93%; font-size:47px;">📒</div>
+  </div>
+
+  <div class="wrap">
+    <header><h1>📝 To-Do Notes</h1></header>
+
+    <div class="card">
       <div class="add-row">
-        <input id="taskInput" type="text" placeholder="Add a new task and press Enter..." aria-label="New task">
-        <input id="dueInput" type="date" aria-label="Due date">
+        <input id="taskInput" type="text" placeholder="Write a task...">
+        <input id="dueInput" type="date">
         <button id="addBtn" class="btn">Add</button>
       </div>
 
       <div class="controls">
-        <div class="filters" role="tablist" aria-label="Filters">
+        <div class="filters">
           <button data-filter="all" class="active">All</button>
           <button data-filter="active">Active</button>
-          <button data-filter="completed">Completed</button>
+          <button data-filter="completed">Done</button>
         </div>
 
-        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-          <div class="small" id="count">0 items</div>
-          <button id="clearCompleted" class="btn ghost">Clear completed</button>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <div id="count">0</div>
+          <button id="clearCompleted" class="btn ghost">Clear done</button>
         </div>
       </div>
 
-      <ul id="list" class="list" aria-live="polite"></ul>
+      <ul id="list" class="list"></ul>
 
       <footer>
-        <div class="small">Tip: double-click a task to edit it.</div>
-        <div class="small">You can drag tasks to reorder</div>
+        <span>Double-click to edit</span>
+        <span>Drag to reorder</span>
       </footer>
+
     </div>
   </div>
 
-  <script>
-    // Simple single-file to-do app with localStorage persistence
-    const STORAGE_KEY = 'todo_v1';
-    const listEl = document.getElementById('list');
-    const input = document.getElementById('taskInput');
-    const dueInput = document.getElementById('dueInput');
-    const addBtn = document.getElementById('addBtn');
-    const countEl = document.getElementById('count');
-    const clearBtn = document.getElementById('clearCompleted');
-    const filters = document.querySelectorAll('.filters button');
-
-    let state = { items: [], filter: 'all' };
-
-    function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-
-    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-    function load(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if(raw) state = JSON.parse(raw);
-      }catch(e){ console.warn('load error',e); }
-    }
-
-    function addTask(text, due=null){
-      if(!text || !text.trim()) return;
-      const item = { id: uid(), text: text.trim(), done:false, due: due || null, created: Date.now() };
-      state.items.unshift(item); // newest on top
-      save(); render();
-    }
-
-    function removeTask(id){ state.items = state.items.filter(i=>i.id!==id); save(); render(); }
-    function toggleTask(id){ state.items = state.items.map(i => i.id===id ? {...i, done: !i.done} : i); save(); render(); }
-    function updateText(id, text){ state.items = state.items.map(i => i.id===id ? {...i, text} : i); save(); }
-    function updateDue(id, due){ state.items = state.items.map(i => i.id===id ? {...i, due} : i); save(); render(); }
-
-    function clearCompleted(){ state.items = state.items.filter(i=>!i.done); save(); render(); }
-
-    function applyFilter(items){
-      if(state.filter==='active') return items.filter(i=>!i.done);
-      if(state.filter==='completed') return items.filter(i=>i.done);
-      return items;
-    }
-
-    function formatDate(iso){ if(!iso) return ''; const d = new Date(iso); return d.toLocaleDateString(); }
-
-    function render(){
-      // update filter UI
-      filters.forEach(f => f.classList.toggle('active', f.dataset.filter === state.filter));
-
-      // build list
-      listEl.innerHTML = '';
-      const items = applyFilter(state.items);
-
-      items.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.className = 'item' + (item.done ? ' completed' : '');
-        li.draggable = true;
-        li.dataset.id = item.id;
-
-        // checkbox area
-        const check = document.createElement('button');
-        check.className = 'check';
-        check.setAttribute('aria-label', item.done ? 'Mark as not done' : 'Mark as done');
-        check.innerHTML = item.done ? '✓' : '';
-        check.onclick = () => toggleTask(item.id);
-
-        const title = document.createElement('div');
-        title.className = 'title';
-        title.textContent = item.text;
-        title.title = 'Double-click to edit';
-
-        // allow inline edit on double click
-        title.addEventListener('dblclick', () => enableEditing(title, item));
-
-        // allow Enter while focused to finish edit
-        title.addEventListener('keydown', (e) => {
-          if(e.key === 'Enter'){
-            e.preventDefault();
-            title.blur();
-          }
-        });
-
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-
-        const due = document.createElement('div');
-        due.className = 'small';
-        due.textContent = item.due ? 'Due: ' + formatDate(item.due) : '';
-
-        const actions = document.createElement('div');
-        actions.className = 'actions';
-
-        const editBtn = document.createElement('button');
-        editBtn.className = 'icon-btn';
-        editBtn.title = 'Edit';
-        editBtn.innerHTML = '✎';
-        editBtn.onclick = () => enableEditing(title, item);
-
-        const dueBtn = document.createElement('button');
-        dueBtn.className = 'icon-btn';
-        dueBtn.title = 'Set due date';
-        dueBtn.innerHTML = '📅';
-        dueBtn.onclick = () => {
-          const newDue = prompt('Enter due date (YYYY-MM-DD) or leave empty to clear', item.due || '');
-          if(newDue === null) return;
-          updateDue(item.id, newDue || null);
-        }
-
-        const delBtn = document.createElement('button');
-        delBtn.className = 'icon-btn';
-        delBtn.title = 'Delete';
-        delBtn.innerHTML = '🗑';
-        delBtn.onclick = () => {
-          if(confirm('Delete this task?')) removeTask(item.id);
-        }
-
-        actions.append(editBtn, dueBtn, delBtn);
-        meta.append(due, actions);
-
-        li.append(check, title, meta);
-        listEl.appendChild(li);
-
-        // drag events
-        li.addEventListener('dragstart', dragStart);
-        li.addEventListener('dragover', dragOver);
-        li.addEventListener('drop', drop);
-        li.addEventListener('dragend', dragEnd);
-      });
-
-      // count
-      const remaining = state.items.filter(i=>!i.done).length;
-      countEl.textContent = remaining + (remaining===1 ? ' item' : ' items');
-    }
-
-    function enableEditing(titleEl, item){
-      titleEl.contentEditable = true;
-      titleEl.focus();
-      // put caret at end
-      document.execCommand('selectAll', false, null);
-      document.getSelection().collapseToEnd();
-
-      function finish(){
-        titleEl.contentEditable = false;
-        const text = titleEl.textContent.trim() || item.text;
-        updateText(item.id, text);
-        save(); render();
-        cleanup();
-      }
-      function cleanup(){
-        titleEl.removeEventListener('blur', finish);
-        titleEl.removeEventListener('keydown', onKey);
-      }
-      function onKey(e){ if(e.key === 'Escape'){ titleEl.textContent = item.text; finish(); } if(e.key === 'Enter'){ e.preventDefault(); finish(); }}
-      titleEl.addEventListener('blur', finish);
-      titleEl.addEventListener('keydown', onKey);
-    }
-
-    // drag & drop reordering
-    let dragSrc = null;
-    function dragStart(e){ this.classList.add('dragging'); dragSrc = this; e.dataTransfer.effectAllowed = 'move'; }
-    function dragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect = 'move'; const over = this; const parent = listEl; if(over === dragSrc) return; const nodes = Array.from(parent.children); const srcIndex = nodes.indexOf(dragSrc); const overIndex = nodes.indexOf(over); if(srcIndex < overIndex) parent.insertBefore(dragSrc, over.nextSibling); else parent.insertBefore(dragSrc, over);
-    }
-    function drop(e){ e.preventDefault(); reorderFromDOM(); }
-    function dragEnd(e){ this.classList.remove('dragging'); }
-
-    function reorderFromDOM(){
-      const ids = Array.from(listEl.children).map(li => li.dataset.id);
-      const newOrder = ids.map(id => state.items.find(i => i.id === id)).filter(Boolean);
-      state.items = newOrder.concat(state.items.filter(i => !ids.includes(i.id))); // keep any filtered-out items at end
-      save(); render();
-    }
-
-    // events
-    addBtn.addEventListener('click', () => { addTask(input.value, dueInput.value || null); input.value=''; dueInput.value=''; input.focus(); });
-    input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ addTask(input.value, dueInput.value || null); input.value=''; dueInput.value=''; }});
-    clearBtn.addEventListener('click', () => { if(confirm('Clear all completed tasks?')) clearCompleted(); });
-
-    filters.forEach(btn => btn.addEventListener('click', () => { state.filter = btn.dataset.filter; render(); save(); }));
-    // initialize
-    load(); render();
-
-    // expose for debugging in console
-    window.__todo = {
-      state, save, load, addTask, clearCompleted
-    };
-
-    // helpful keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if((e.ctrlKey || e.metaKey) && e.key === 'k'){ e.preventDefault(); input.focus(); }
-    });
-  </script>
+  <!-- Link JS -->
+  <script src="app.js"></script>
 </body>
 </html>
 
